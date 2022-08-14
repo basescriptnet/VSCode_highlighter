@@ -1,0 +1,367 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "basescript",
+	"injections": {
+		"R:text.html - (comment.block, text.bs meta.embedded, meta.tag.*.*.bs, meta.tag.*.*.*.bs, meta.tag.*.*.*.*.bs)": {
+			"comment": "Uses R: to ensure this matches after any other injections.",
+			"patterns": [
+				{
+					"match": "<",
+					"name": "invalid.illegal.bad-angle-bracket.bs"
+				}
+			]
+		}
+	},
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#booleans"
+		},
+		{
+			"include": "#nulls"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#html"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#charliterals"
+		},
+		{
+			"include": "#regex"
+		},
+		{
+			"include": "#templateLiterals"
+		},
+		{
+			"include": "#arrays"
+		},
+		{
+			"include": "#variables"
+		},
+		{
+			"include": "#properties"
+		},
+		{
+			"include": "#identifier"
+		},
+		{
+			"include": "#operator"
+		},
+		{
+			"include": "#punctuation"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [{
+				"name": "comment.line",
+				"match": "//([^\n]*)"
+			}]
+		},
+		"array": {
+			"begin": "\\[",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.begin.bs"
+				}
+			},
+			"end": "\\]",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.definition.array.end.bs"
+				}
+			},
+			"name": "meta.structure.array.bs",
+			"patterns": [
+				{
+					"match": ",",
+					"name": "punctuation.separator.array.bs"
+				},
+				{
+					"match": "[^\\s\\]]",
+					"name": "invalid.illegal.expected-array-separator.bs"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.bs",
+				"match": "\\b(private|print|and|or|THAT|till|from|through|break|case|continue|default|do|return|in|of|BEGIN|END|import|@import|@include|@eval|as|if|else|unless|for|while|switch|try|catch|finally|is|not)\\b"
+			},
+			{
+				"name": "keyword.control.new.bs",
+				"match": "(?<!\\$)\\b(new)\\b(?!\\$)"
+			},
+			{
+				"name": "keyword.declaration.bs",
+				"match": "(?<!\\$)\\b(free|this|class|type|typeof|sizeof|extends|constructor|super|ASSIGN|SET|TO|INTO)\\b(?!\\$)"
+			},
+			{
+				"name": "keyword.operator.ternary.bs",
+				"match": "\\?|:"
+			},
+			{
+				"name": "keyword.operator.assignment.bitwise.bs",
+				"match": "((&|\\^|\\||<<|>>>?)=)"
+			},
+			{
+				"name": "keyword.operator.logical.bs",
+				"match": "(!|&&|\\|\\|)"
+			},
+			{
+				"name": "keyword.operator.closure.bs",
+				"match": "(=>)"
+			},
+			{
+				"name": "keyword.operator.comparison.bs",
+				"match": "(==|!=|<=?|>=?|===|!==)"
+			},
+			{
+				"name": "keyword.operator.assignment.bs",
+				"match": "(=)"
+			},
+			{
+				"name": "storage.modifier.bs",
+				"match": "(?<!\\$)\\b(static|const|let|var)\\b(?!\\$)"
+			},
+			{
+				"name": "storage.type.primitive.bs",
+				"match": "(?<!\\$)\\b(?:void|let)\\b(?!\\$)"
+			}
+			]
+		},
+		"punctuation": {
+			"patterns": [
+				{
+					"name": "punctuation.comma.dart",
+					"match": ","
+				},
+				{
+					"name": "punctuation.terminator.dart",
+					"match": ";"
+				},
+				{
+					"name": "punctuation.dot.dart",
+					"match": "\\.|\\.\\.\\."
+				}
+			]
+		},
+		"html": {
+			"patterns": [
+				{
+					"match": "\\<([A-Za-z_$]+[A-Za-z0-9_$]*)(#([A-Za-z_$]+[A-Za-z0-9_$]*))?((.([A-Za-z_$]+[A-Za-z0-9_$]*))*)?\\/>",
+					"captures": {
+						"1":{
+							"name": "constant.language.bs"
+						},
+						"3": {
+							"name": "constant.language.bs"
+						},
+						"4": {
+							"name": "string.language.bs"
+						}
+					},
+					"name": "variable.bs"
+				},
+				{
+					"match": "\\<(?<tagName>[A-Za-z_$]+[A-Za-z0-9_$]*)(?<attributes>(?<attribute>\\s+(?<attribute_name>[A-Za-z_$]+[A-Za-z0-9_$]*)=(?<attribute_value>\"(\\\\[\"nrt]|[^\"])*\"))*)\\s*>",
+					"captures": {
+						"1":{
+							"name": "constant.language.bs"
+						},
+						"2": {
+							"name": "string.language.bs"
+						}
+					},
+					"name": "variable.bs"
+				},
+				{
+					"match": "<\\/([A-Za-z_$]+[A-Za-z0-9_$]*)\\s*>",
+					"captures": {
+						"1":{
+							"name": "constant.language.bs"
+						}
+					},
+					"name": "variable.bs"
+				},
+				{
+					"match": "\\.\\s+[A-Za-z_$]+[A-Za-z0-9_$]*",
+					"name": "constant.language.bs"
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"match": "\\$",
+					"name": "variable.bs"
+				},
+				{
+					"match": "\\$?\\b[A-Za-z_$]+[A-Za-z0-9_$]*\\b\\$?",
+					"name": "variable.bs"
+				},
+				{
+					"match": "\\.\\s+[A-Za-z_$]+[A-Za-z0-9_$]*",
+					"name": "constant.language.bs"
+				}
+			]
+		},
+        "identifier": {
+            "match": "\\b[A-Za-z_$]+[A-Za-z0-9_$]*\\b",
+            "name": "variable.other.property.bs"
+        },
+        "operator": {
+            "match": "-|\\+|\\/|\\*|%|=|\\.\\.\\.?",
+			"name": "keyword.operator.bs"
+        },
+		"numbers": {
+			"name": "constant.numeric.bs",
+			"patterns": [
+				{
+					"name": "constant.numeric.dec.bs",
+					"match": "\\b[0-9]+(_?[0-9]+)*\\.[0-9]+"
+				},
+				{
+					"name": "constant.numeric.dec.bs",
+					"match": "\\b[0-9]+(_?[0-9]+)*n?"
+				}
+			]
+		},
+        "regex": {
+            "name": "string.regexp.nearley",
+            "begin": "\\/",
+            "end":  "\\/",
+            "match": "\\/[^\n\/]*\\/([gmi]*)?"
+        },
+		"booleans": {
+			"name": "constants.bs",
+			"patterns": [
+				{
+					"name": "constant.language.bs",
+					"match": "\\b(true|false)\\b"
+				}
+			]
+		},
+        "constants": {
+            "match": "\\b(debugger|undefined|null|def|function|SAVE|DELETE|delete|LOG|ERROR|WRITE|PUSH|POP|SHIFT|UNSHIFT|FROM|INTO)\\b",
+            "name": "constant.language.bs"
+        },
+		"types":{
+			"name": "entity.name.type.bs",
+			"match": "\\b(Int|Number|String|Float|NaN|Object|Array|HTML|Symbol|Function|[A-Z]+[A-Za-z]*)\\b"
+		},
+		"properties": {
+			"name": "property.bs",
+			"patterns": [
+				{
+					"name": "entity.name.function.bs",
+					"match": "\\.\\s*[A-Za-z_$]+[A-Za-z_0-9$]*"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.bs",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.bs",
+					"match": "\\\\."
+				}
+			]
+		},
+		"charliterals": {
+			"name": "string.quoted.single.bs",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.bs",
+					"match": "\\\\."
+				}
+			]
+		},
+		"templateLiterals": {
+			"name": "string.quoted.single.bs",
+			"begin": "`",
+			"end": "`",
+			"patterns": [
+				{
+					"name": "constant.character.escape.bs",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"object": {
+		"begin": "\\{",
+		"beginCaptures": {
+			"0": {
+				"name": "punctuation.definition.dictionary.begin.bs"
+			}
+		},
+		"end": "\\}",
+		"endCaptures": {
+			"0": {
+				"name": "punctuation.definition.dictionary.end.bs"
+			}
+		},
+		"name": "meta.structure.dictionary.bs",
+		"patterns": [
+			{
+				"comment": "the JSON object key",
+				"include": "#objectkey"
+			},
+			{
+				"include": "#comments"
+			},
+			{
+				"begin": ":",
+				"beginCaptures": {
+					"0": {
+						"name": "punctuation.separator.dictionary.key-value.bs"
+					}
+				},
+				"end": "(,)|(?=\\})",
+				"endCaptures": {
+					"1": {
+						"name": "punctuation.separator.dictionary.pair.bs"
+					}
+				},
+				"name": "meta.structure.dictionary.value.bs",
+				"patterns": [
+					{
+						"comment": "the JSON object value",
+						"include": "#value"
+					},
+					{
+						"match": "[^\\s,]",
+						"name": "invalid.illegal.expected-dictionary-separator.bs"
+					}
+				]
+			},
+			{
+				"match": "[^\\s\\}]",
+				"name": "invalid.illegal.expected-dictionary-separator.bs"
+			}
+		]
+	},
+	"scopeName": "source.bs"
+}

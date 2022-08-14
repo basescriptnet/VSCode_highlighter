@@ -1,0 +1,25 @@
+{
+    "name": "basescript",
+    "displayName": "BaseScript",
+    "description": "Superset for JavaScript",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.60.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "bs",
+            "aliases": ["base", "basescript", "bs"],
+            "extensions": [".bs"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "bs",
+            "scopeName": "source.bs",
+            "path": "./syntaxes/bs.tmLanguage.json"
+        }]
+    }
+}
