@@ -1,17 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "basescript",
-	"injections": {
-		"R:text.html - (comment.block, text.bs meta.embedded, meta.tag.*.*.bs, meta.tag.*.*.*.bs, meta.tag.*.*.*.*.bs)": {
-			"comment": "Uses R: to ensure this matches after any other injections.",
-			"patterns": [
-				{
-					"match": "<",
-					"name": "invalid.illegal.bad-angle-bracket.bs"
-				}
-			]
-		}
-	},
 	"patterns": [
 		{
 			"include": "#comments"
@@ -53,8 +42,14 @@
 			"include": "#arrays"
 		},
 		{
-			"include": "#variables"
+			"include": "#operator"
 		},
+		{
+			"include": "#punctuation"
+		},
+        {
+            "include": "#functions"
+        },
 		{
 			"include": "#properties"
 		},
@@ -62,10 +57,7 @@
 			"include": "#identifier"
 		},
 		{
-			"include": "#operator"
-		},
-		{
-			"include": "#punctuation"
+			"include": "#variables"
 		}
 	],
 	"repository": {
@@ -103,7 +95,15 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control.bs",
-				"match": "\\b(private|print|and|or|THAT|till|from|through|break|case|continue|default|do|return|in|of|BEGIN|END|import|@import|@include|@eval|as|if|else|unless|for|while|switch|try|catch|finally|is|not)\\b"
+				"match": "\\b(interface|print|and|or|THAT|till|from|through|break|case|continue|default|do|return|in|of|BEGIN|END|import|as|when|if|else|unless|for|while|switch|try|catch|finally|is|not)\\b"
+			},
+            {
+                "name": "storage.modifier.bs",
+                "match": "@(import|include|dirname|filename|ignore|eval)\\b"
+            },
+            {
+				"name": "keyword.control.bs",
+				"match": "#\\b(include)\\b"
 			},
 			{
 				"name": "keyword.control.new.bs",
@@ -111,7 +111,7 @@
 			},
 			{
 				"name": "keyword.declaration.bs",
-				"match": "(?<!\\$)\\b(free|this|class|type|typeof|sizeof|extends|constructor|super|ASSIGN|SET|TO|INTO)\\b(?!\\$)"
+				"match": "(?<!\\$)\\b(module|operator|swap|defined|safeValue|namespace|free|this|class|type|typeof|sizeof|extends|constructor|super|ASSIGN|SET|TO|INTO)\\b(?!\\$)"
 			},
 			{
 				"name": "keyword.operator.ternary.bs",
@@ -131,7 +131,7 @@
 			},
 			{
 				"name": "keyword.operator.comparison.bs",
-				"match": "(==|!=|<=?|>=?|===|!==)"
+				"match": "(===|!==|<=?|>=?|==|!=)"
 			},
 			{
 				"name": "keyword.operator.assignment.bs",
@@ -143,23 +143,23 @@
 			},
 			{
 				"name": "storage.type.primitive.bs",
-				"match": "(?<!\\$)\\b(?:void|let)\\b(?!\\$)"
+				"match": "(?<!\\$)\\b(?:void)\\b(?!\\$)"
 			}
 			]
 		},
 		"punctuation": {
 			"patterns": [
 				{
-					"name": "punctuation.comma.dart",
+					"name": "punctuation.comma.bs",
 					"match": ","
 				},
 				{
-					"name": "punctuation.terminator.dart",
+					"name": "punctuation.terminator.bs",
 					"match": ";"
 				},
 				{
-					"name": "punctuation.dot.dart",
-					"match": "\\.|\\.\\.\\."
+					"name": "punctuation.dot.bs",
+					"match": "\\.\\.\\.|\\.\\.|\\."
 				}
 			]
 		},
@@ -224,8 +224,20 @@
 			]
 		},
         "identifier": {
-            "match": "\\b[A-Za-z_$]+[A-Za-z0-9_$]*\\b",
-            "name": "variable.other.property.bs"
+            "patterns": [
+                {
+                    "match": "\\.\\s+[A-Za-z_$]+[A-Za-z0-9_$]*",
+                    "name": "constant.language.bs"
+                },
+                {
+                    "match": "\\$",
+                    "name": "variable.bs"
+                },
+                {
+                    "match": "\\$?\\b[A-Za-z_$]+[A-Za-z0-9_$]*\\b\\$?",
+                    "name": "variable.bs"
+                }
+            ]
         },
         "operator": {
             "match": "-|\\+|\\/|\\*|%|=|\\.\\.\\.?",
@@ -244,11 +256,29 @@
 				}
 			]
 		},
+        "functions": {
+            "patterns": [
+                {
+                    "match": "\\b([A-Za-z_$]+[A-Za-z0-9_$]*)\\s*\\(",
+                    "captures": {
+                        "1": {
+                            "name": "entity.name.function.bs"
+                        }
+                    }
+                }
+            ]
+        },
         "regex": {
-            "name": "string.regexp.nearley",
-            "begin": "\\/",
-            "end":  "\\/",
-            "match": "\\/[^\n\/]*\\/([gmi]*)?"
+            "name": "string.regexp.bs",
+            "begin": "(?<!\\\\)\\/",
+            "end":  "\\/(?=[gmi]*)",
+            "contentName": "string.regexp.bs",
+            "patterns": [
+                {
+                    "name": "constant.character.escape.bs",
+                    "match": "\\\\[\/{}\\[\\]()\\\\+*?.^$|]"
+                }
+            ]
         },
 		"booleans": {
 			"name": "constants.bs",
@@ -265,7 +295,7 @@
         },
 		"types":{
 			"name": "entity.name.type.bs",
-			"match": "\\b(Int|Number|String|Float|NaN|Object|Array|HTML|Symbol|Function|[A-Z]+[A-Za-z]*)\\b"
+			"match": "\\b(Int|Number|String|Float|NaN|Object|Array|HTML|Symbol|Function|[A-Z]+[A-Za-z_$]*)\\b"
 		},
 		"properties": {
 			"name": "property.bs",
@@ -303,10 +333,56 @@
 			"begin": "`",
 			"end": "`",
 			"patterns": [
-				{
-					"name": "constant.character.escape.bs",
-					"match": "\\\\."
-				}
+                {
+                    "name": "constant.character.escape.bs",
+                    "match": "\\\\\\$"
+                },
+                {
+                    "name": "variable.language",
+                    "begin": "\\$\\{",
+                    "end": "\\}",
+                    "patterns": [
+                        {
+                            "include": "#identifier"
+                        },
+                        {
+                            "include": "#operator"
+                        },
+                        {
+                            "include": "#numbers"
+                        },
+                        {
+                            "include": "#functions"
+                        },
+                        {
+                            "include": "#regex"
+                        },
+                        {
+                            "include": "#booleans"
+                        },
+                        {
+                            "include": "#constants"
+                        },
+                        {
+                            "include": "#types"
+                        },
+                        {
+                            "include": "#properties"
+                        },
+                        {
+                            "include": "#strings"
+                        },
+                        {
+                            "include": "#charliterals"
+                        },
+                        {
+                            "include": "#templateLiterals"
+                        },
+                        {
+                            "include": "#comments"
+                        }
+                    ]
+                }
 			]
 		}
 	},

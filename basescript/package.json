@@ -2,7 +2,7 @@
     "name": "basescript",
     "displayName": "BaseScript",
     "description": "Superset for JavaScript",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.60.0"
     },
@@ -12,8 +12,8 @@
     "contributes": {
         "languages": [{
             "id": "bs",
-            "aliases": ["base", "basescript", "bs"],
-            "extensions": [".bs"],
+            "aliases": ["base", "basescript", "bs", "bm"],
+            "extensions": [".bs", ".bm"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{
